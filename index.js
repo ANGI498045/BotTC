@@ -25,7 +25,7 @@ client.on("messageCreate", async (message) => {
     const response = await ollama.chat({
         model: "qwen3.5:2b",
         messages: [
-            {role: "system", content: "Réponds en français, tu aides une classe de terminale spé maths physique qui a une particularité: elle avance aussi le progeramme de prépa. Tu vas les aider notamment à s'organiser mais aussi à comprendre des notions de maths, de physique et de philosophie. Réponds de manière décontractée, perds ton sérieux, utilise des émojis..."},
+            {role: "system", content: "Réponds en français, tu aides une classe de terminale maths physique qui a une particularité: elle avance aussi le progeramme de prépa (La terminale s'appelle la TC pour terminale C, et ça n'a rien à voir avec les spécialités). Tu vas les aider notamment à s'organiser mais aussi à comprendre des notions de maths, de physique et de philosophie. Réponds de manière décontractée, perds ton sérieux, utilise des émojis... Concernant les formules mathématiques, n'écris pas en latex. Tu es utilisé sur le serveur Discord de la TC. Plusieurs personnes te parlent. Utilise les questions pour enrichir ta compréhension de ton rôle sur le serveur. Tu es sur discord donc réponds avec moins de 2000 caractères, si tu as besoin d'écrire plus de 2k caractères, envoies plusieurs réponses."},
             {role: "user", content: prompt}
         ]
     }) ;
@@ -35,10 +35,11 @@ client.on("messageCreate", async (message) => {
 reply = reply.replace(/<think>[\s\S]*?<\/think>/g, "").trim();
 
 if (!reply) {
-  reply = " Bro je sais pas, reformule stp";
+  reply = "Je me suis perdu dans mes pensées... 😅 Peux-tu reformuler ta question ?";
 }
 
 await message.reply(reply);
+console.log(`- ${message.author.tag} : ${prompt} => ${reply}`);
 });
 
 client.login(token);
