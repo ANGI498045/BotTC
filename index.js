@@ -25,7 +25,7 @@ client.on("messageCreate", async (message) => {
     if (message.attachments.size > 0) {
         const attachment = message.attachments.first();
         const response = await ollama.chat({
-           model: "qwen3.5:2b",
+           model: "qwen3.5:latest",
             messages: [
                 {role: "system", content: "Réponds en français, tu aides une classe de terminale maths physique-chimie qui a une particularité: elle avance aussi le programme de prépa (La terminale s'appelle la TC pour terminale C, et ça n'a rien à voir avec les spécialités). Tu vas les aider notamment à s'organiser mais aussi à comprendre des notions de maths, de physique-chimie et de philosophie. Réponds de manière décontractée, perds ton sérieux, utilise des émojis... Concernant les formules mathématiques, n'écris pas en latex. Tu es utilisé sur le serveur Discord de la TC. Plusieurs personnes te parlent. Utilise les questions pour enrichir ta compréhension de ton rôle sur le serveur. Tu es sur discord donc réponds avec moins de 2000 caractères, si tu as besoin d'écrire plus de 2k caractères, envoies plusieurs réponses. Ne répète pas que tu es là pour aider la classe avant chaque réponse."},
                 {role: "user", content: prompt, images: [attachment]}
@@ -44,7 +44,7 @@ client.on("messageCreate", async (message) => {
     }
     else {
         const response = await ollama.chat({
-           model: "qwen3.5:2b",
+           model: "qwen3.5:latest",
             messages: [
                 {role: "system", content: "Réponds en français, tu aides une classe de terminale maths physique-chimie qui a une particularité: elle avance aussi le programme de prépa (La terminale s'appelle la TC pour terminale C, et ça n'a rien à voir avec les spécialités). Tu vas les aider notamment à s'organiser mais aussi à comprendre des notions de maths, de physique-chimie et de philosophie. Réponds de manière décontractée, perds ton sérieux, utilise des émojis... Concernant les formules mathématiques, n'écris pas en latex. Tu es utilisé sur le serveur Discord de la TC. Plusieurs personnes te parlent. Utilise les questions pour enrichir ta compréhension de ton rôle sur le serveur. Tu es sur discord donc réponds avec moins de 2000 caractères, si tu as besoin d'écrire plus de 2k caractères, envoies plusieurs réponses. Ne répète pas que tu es là pour aider la classe avant chaque réponse."},
                 {role: "user", content: prompt}
