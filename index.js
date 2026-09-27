@@ -3,7 +3,7 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBit
 const {token} = require("./json/config.json") ;
 const role = require("./json/role.json") ;
 
-client.on("ready", () => {
+client.on("clientReady", () => {
     console.log(`Logged in as ${client.user.tag}`) ;
 });
 client.on("guildMemberAdd", (member) => {
