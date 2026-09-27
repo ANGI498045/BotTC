@@ -17,51 +17,40 @@ client.on("guildMemberAdd", (member) => {
 }) ;
 
 client.on("messageCreate", async (message) => {
-    if (message.author.bot) return ;
-    const prompt = message.content ;
+    if (message.author.bot) return;
+    const prompt = message.content;
     if (!message.mentions.has(client.user)) return;
-    if (!prompt) return message.reply("Oui ?") ;
-    await message.channel.sendTyping() ;
+    if (!prompt) return message.reply("Oui ?");
+    await message.channel.sendTyping();
+
+    const messages = [
+        {role: "system", content: "Réponds en français."},
+    ];
+
     if (message.attachments.size > 0) {
         const attachment = message.attachments.first();
-        const response = await ollama.chat({
-           model: "qwen3.5:latest",
-            messages: [
-                {role: "system", content: "Réponds en français, tu aides une classe de terminale maths physique-chimie qui a une particularité: elle avance aussi le programme de prépa (La terminale s'appelle la TC pour terminale C, et ça n'a rien à voir avec les spécialités). Tu vas les aider notamment à s'organiser mais aussi à comprendre des notions de maths, de physique-chimie et de philosophie. Réponds de manière décontractée, perds ton sérieux, utilise des émojis... Concernant les formules mathématiques, n'écris pas en latex. Tu es utilisé sur le serveur Discord de la TC. Plusieurs personnes te parlent. Utilise les questions pour enrichir ta compréhension de ton rôle sur le serveur. Tu es sur discord donc réponds avec moins de 2000 caractères, si tu as besoin d'écrire plus de 2k caractères, envoies plusieurs réponses. Ne répète pas que tu es là pour aider la classe avant chaque réponse."},
-                {role: "user", content: prompt, images: [attachment]}
-            ]
-            })
-        let reply = response.message.content?.trim() ?? "";
 
-        reply = reply.replace(/<think>[\s\S]*?<\/think>/g, "").trim();
+        // 👇 Bild herunterladen und in Base64 umwandeln
+        const imageRes = await fetch(attachment.url);
+        const imageBuffer = await imageRes.arrayBuffer();
+        const base64Image = Buffer.from(imageBuffer).toString("base64");
 
-        if (!reply) {
-            reply = "Je me suis perdu dans mes pensées... 😅 Peux-tu reformuler ta question ?";
-        }
-
-        await message.reply(reply);
-        console.log(`- ${message.author.tag} : ${prompt}`);
-    }
-    else {
-        const response = await ollama.chat({
-           model: "qwen3.5:latest",
-            messages: [
-                {role: "system", content: "Réponds en français, tu aides une classe de terminale maths physique-chimie qui a une particularité: elle avance aussi le programme de prépa (La terminale s'appelle la TC pour terminale C, et ça n'a rien à voir avec les spécialités). Tu vas les aider notamment à s'organiser mais aussi à comprendre des notions de maths, de physique-chimie et de philosophie. Réponds de manière décontractée, perds ton sérieux, utilise des émojis... Concernant les formules mathématiques, n'écris pas en latex. Tu es utilisé sur le serveur Discord de la TC. Plusieurs personnes te parlent. Utilise les questions pour enrichir ta compréhension de ton rôle sur le serveur. Tu es sur discord donc réponds avec moins de 2000 caractères, si tu as besoin d'écrire plus de 2k caractères, envoies plusieurs réponses. Ne répète pas que tu es là pour aider la classe avant chaque réponse."},
-                {role: "user", content: prompt}
-            ],
-        });
-        let reply = response.message.content?.trim() ?? "";
-
-        reply = reply.replace(/<think>[\s\S]*?<\/think>/g, "").trim();
-
-        if (!reply) {
-            reply = "Je me suis perdu dans mes pensées... 😅 Peux-tu reformuler ta question ?";
-        }
-
-        await message.reply(reply);
-        console.log(`- ${message.author.tag} : ${prompt}`);
+        messages.push({role: "user", content: prompt, images: [base64Image]});
+    } else {
+        messages.push({role: "user", content: prompt});
     }
 
+    const response = await ollama.chat({
+        model: "qwen3.5:latest",
+        messages: messages,
+    });
+
+    let reply = response.message.content?.trim() ?? "";
+    reply = reply.replace(/<think>[\s\S]*?<\/think>/g, "").trim();
+    if (!reply) reply = "Je me suis perdu dans mes pensées... 😅 Peux-tu reformuler ta question ?";
+
+    await message.reply(reply);
+    console.log(`- ${message.author.tag} : ${prompt}`);
 });
 
 client.login(token);
