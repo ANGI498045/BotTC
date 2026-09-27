@@ -24,7 +24,7 @@ client.on("messageCreate", async (message) => {
     await message.channel.sendTyping();
 
     const messages = [
-        {role: "system", content: "Réponds en français."},
+        {role: "system", content: "Réponds en français et en moins de 2000 caractères. Emploies un ton décontracté, utilises des émojis, fais des blagues/références de jeune"},
     ];
 
     if (message.attachments.size > 0) {
