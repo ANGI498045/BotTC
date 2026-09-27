@@ -11,5 +11,6 @@ client.on("guildMemberAdd", (member) => {
     if (!channel) return ;
     channel.send(`${member} vient d'arriver. Bienvenue, camarade !`);
     member.roles.add(role.camarade) ;
+    console.log(`+ ${member.user.tag}`)
 }) ;
 client.login(token);
