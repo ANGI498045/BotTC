@@ -1,4 +1,4 @@
-const {Client, GatewayIntentBits, GuildMember} = require("discord.js") ;
+const {Client, GatewayIntentBits} = require("discord.js") ;
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMembers] }) ;
 const {token} = require("./json/config.json") ;
 const role = require("./json/role.json") ;
@@ -22,24 +22,46 @@ client.on("messageCreate", async (message) => {
     if (!message.mentions.has(client.user)) return;
     if (!prompt) return message.reply("Oui ?") ;
     await message.channel.sendTyping() ;
-    const response = await ollama.chat({
-        model: "qwen3.5:2b",
-        messages: [
-            {role: "system", content: "Réponds en français, tu aides une classe de terminale maths physique qui a une particularité: elle avance aussi le progeramme de prépa (La terminale s'appelle la TC pour terminale C, et ça n'a rien à voir avec les spécialités). Tu vas les aider notamment à s'organiser mais aussi à comprendre des notions de maths, de physique et de philosophie. Réponds de manière décontractée, perds ton sérieux, utilise des émojis... Concernant les formules mathématiques, n'écris pas en latex. Tu es utilisé sur le serveur Discord de la TC. Plusieurs personnes te parlent. Utilise les questions pour enrichir ta compréhension de ton rôle sur le serveur. Tu es sur discord donc réponds avec moins de 2000 caractères, si tu as besoin d'écrire plus de 2k caractères, envoies plusieurs réponses."},
-            {role: "user", content: prompt}
-        ]
-    }) ;
-    let reply = response.message.content?.trim() ?? "";
+    if (message.attachments.size > 0) {
+        const attachment = message.attachments.first();
+        const response = await ollama.chat({
+           model: "qwen3.5:2b",
+            messages: [
+                {role: "system", content: "Réponds en français, tu aides une classe de terminale maths physique-chimie qui a une particularité: elle avance aussi le programme de prépa (La terminale s'appelle la TC pour terminale C, et ça n'a rien à voir avec les spécialités). Tu vas les aider notamment à s'organiser mais aussi à comprendre des notions de maths, de physique-chimie et de philosophie. Réponds de manière décontractée, perds ton sérieux, utilise des émojis... Concernant les formules mathématiques, n'écris pas en latex. Tu es utilisé sur le serveur Discord de la TC. Plusieurs personnes te parlent. Utilise les questions pour enrichir ta compréhension de ton rôle sur le serveur. Tu es sur discord donc réponds avec moins de 2000 caractères, si tu as besoin d'écrire plus de 2k caractères, envoies plusieurs réponses. Ne répète pas que tu es là pour aider la classe avant chaque réponse."},
+                {role: "user", content: prompt, images: [attachment]}
+            ]
+            })
+        let reply = response.message.content?.trim() ?? "";
 
-// Falls du <think>-Tags rausfilterst, das erst danach trimmen:
-reply = reply.replace(/<think>[\s\S]*?<\/think>/g, "").trim();
+        reply = reply.replace(/<think>[\s\S]*?<\/think>/g, "").trim();
 
-if (!reply) {
-  reply = "Je me suis perdu dans mes pensées... 😅 Peux-tu reformuler ta question ?";
-}
+        if (!reply) {
+            reply = "Je me suis perdu dans mes pensées... 😅 Peux-tu reformuler ta question ?";
+        }
 
-await message.reply(reply);
-console.log(`- ${message.author.tag} : ${prompt} => ${reply}`);
+        await message.reply(reply);
+        console.log(`- ${message.author.tag} : ${prompt}`);
+    }
+    else {
+        const response = await ollama.chat({
+           model: "qwen3.5:2b",
+            messages: [
+                {role: "system", content: "Réponds en français, tu aides une classe de terminale maths physique-chimie qui a une particularité: elle avance aussi le programme de prépa (La terminale s'appelle la TC pour terminale C, et ça n'a rien à voir avec les spécialités). Tu vas les aider notamment à s'organiser mais aussi à comprendre des notions de maths, de physique-chimie et de philosophie. Réponds de manière décontractée, perds ton sérieux, utilise des émojis... Concernant les formules mathématiques, n'écris pas en latex. Tu es utilisé sur le serveur Discord de la TC. Plusieurs personnes te parlent. Utilise les questions pour enrichir ta compréhension de ton rôle sur le serveur. Tu es sur discord donc réponds avec moins de 2000 caractères, si tu as besoin d'écrire plus de 2k caractères, envoies plusieurs réponses. Ne répète pas que tu es là pour aider la classe avant chaque réponse."},
+                {role: "user", content: prompt}
+            ],
+        });
+        let reply = response.message.content?.trim() ?? "";
+
+        reply = reply.replace(/<think>[\s\S]*?<\/think>/g, "").trim();
+
+        if (!reply) {
+            reply = "Je me suis perdu dans mes pensées... 😅 Peux-tu reformuler ta question ?";
+        }
+
+        await message.reply(reply);
+        console.log(`- ${message.author.tag} : ${prompt}`);
+    }
+
 });
 
 client.login(token);
