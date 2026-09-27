@@ -9,7 +9,7 @@ client.on("clientReady", () => {
 client.on("guildMemberAdd", (member) => {
     const channel = member.guild.channels.cache.find(ch => ch.name === "général") ;
     if (!channel) return ;
-    channel.send(`${member} vient d'arriver. Bienvenue, camarade !`);
+    channel.send(`${member} vient d'arriver. Bienvenue, camarade ! 🫡`);
     member.roles.add(role.camarade) ;
     console.log(`+ ${member.user.tag}`)
 }) ;
