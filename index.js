@@ -2,7 +2,7 @@ const {Client, GatewayIntentBits} = require("discord.js") ;
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMembers] }) ;
 const {token} = require("./json/config.json") ;
 const {role} = require("./json/role.json") ;
-const {CPhilo} = require("./cours/philo.json") ;
+const {CPhilo1} = require("./cours/philo.json") ;
 const {Ollama} = require("ollama") ;
 const ollama = new Ollama();
 
@@ -25,7 +25,7 @@ client.on("messageCreate", async (message) => {
     await message.channel.sendTyping();
 
     const messages = [
-        {role: "system", content: "Réponds en français et en moins de 2000 caractères. Emploies un ton décontracté, utilises des émojis, fais des blagues/références de jeune"},
+        {role: "system", content: "Réponds en français et en moins de 2000 caractères. Emploies un ton décontracté, utilises des émojis, fais des blagues/références de jeune. Par contre, si on te demande de résumer un cours, sois sérieux et précis."},
     ];
 
     if (message.attachments.size > 0) {
@@ -37,8 +37,8 @@ client.on("messageCreate", async (message) => {
         const base64Image = Buffer.from(imageBuffer).toString("base64");
 
         messages.push({role: "user", content: prompt, images: [base64Image]});
-    }else if (message.content.includes("CPhilo")){
-        messages.push({role: "user", content: prompt + CPhilo});
+    }else if (message.content.includes("CPhilo1")){
+        messages.push({role: "user", content: prompt + "Voici le chapitre 1 de philosophie:" + CPhilo1});
     } else {
         messages.push({role: "user", content: prompt});
     }
