@@ -1,9 +1,10 @@
 const {Client, GatewayIntentBits} = require("discord.js") ;
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMembers] }) ;
 const {token} = require("./json/config.json") ;
-const role = require("./json/role.json") ;
+const {role} = require("./json/role.json") ;
+const {CPhilo} = require("./cours/philo.json") ;
 const {Ollama} = require("ollama") ;
-const ollama = new Ollama() ;
+const ollama = new Ollama();
 
 client.on("clientReady", () => {
     console.log(`Logged in as ${client.user.tag}`) ;
@@ -36,6 +37,8 @@ client.on("messageCreate", async (message) => {
         const base64Image = Buffer.from(imageBuffer).toString("base64");
 
         messages.push({role: "user", content: prompt, images: [base64Image]});
+    }else if (message.content.includes("CPhilo")){
+        messages.push({role: "user", content: prompt + CPhilo});
     } else {
         messages.push({role: "user", content: prompt});
     }
