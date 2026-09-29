@@ -25,20 +25,19 @@ client.on("messageCreate", async (message) => {
     await message.channel.sendTyping();
 
     const messages = [
-        {role: "system", content: "Réponds en français et en moins de 2000 caractères. Emploies un ton décontracté, utilises des émojis, fais des blagues/références de jeune. Par contre, si on te demande de résumer un cours, sois sérieux et précis."},
+        {role: "system", content: "Tu aides une classe de terminale/prépa.Réponds en français et en strictement moins de 2000 caractères car tu es sur discord. Sois sérieux et précis lorsqu'il s'agit de cours, sinon sois agréable et fun tout en restant dans la modération."},
     ];
 
     if (message.attachments.size > 0) {
         const attachment = message.attachments.first();
 
-        // 👇 Bild herunterladen und in Base64 umwandeln
         const imageRes = await fetch(attachment.url);
         const imageBuffer = await imageRes.arrayBuffer();
         const base64Image = Buffer.from(imageBuffer).toString("base64");
 
         messages.push({role: "user", content: prompt, images: [base64Image]});
     }else if (message.content.includes("CPhilo1")){
-        messages.push({role: "user", content: prompt + "Voici le chapitre 1 de philosophie:" + CPhilo1});
+        messages.push({role: "user", content: prompt + "Voici le chapitre 1 de philosophie duquel tu dois sortir les infos:" + CPhilo1});
     } else {
         messages.push({role: "user", content: prompt});
     }
